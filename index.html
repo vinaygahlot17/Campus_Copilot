@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Copilot - Ultimate Student Companion</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CSS Style -->
+    <link rel="stylesheet" href="index.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo-icon">
+                        <i data-lucide="graduation-cap"></i>
+                    </div>
+                    <span class="logo-text">Campus<span class="highlight">Copilot</span></span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-tab="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="timetable">
+                    <i data-lucide="calendar"></i>
+                    <span>Timetable</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="tasks">
+                    <i data-lucide="check-square"></i>
+                    <span>Tasks & Deadlines</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="attendance">
+                    <i data-lucide="percent"></i>
+                    <span>Attendance</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="notes">
+                    <i data-lucide="file-text"></i>
+                    <span>Notes & AI</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="placement">
+                    <i data-lucide="briefcase"></i>
+                    <span>Placement Prep</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="profile">
+                    <i data-lucide="user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-quick-profile">
+                    <div class="avatar" id="nav-avatar">JD</div>
+                    <div class="info">
+                        <div class="name" id="nav-username">John Doe</div>
+                        <div class="role" id="nav-major">Computer Science</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <header class="top-navbar">
+                <div class="welcome-section">
+                    <h1 class="welcome-title">Hello, <span id="header-username">Student</span> 👋</h1>
+                    <p class="welcome-subtitle">Here is your academic overview for today.</p>
+                </div>
+                <div class="top-nav-actions">
+                    <button class="nav-btn-icon" id="toggle-focus-mode" title="Quick Focus Mode">
+                        <i data-lucide="timer"></i>
+                    </button>
+                    <div class="date-display">
+                        <i data-lucide="calendar-days"></i>
+                        <span id="current-date">July 2, 2026</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Tab -->
+            <section class="tab-content active" id="tab-dashboard">
+                <div class="dashboard-grid">
+                    <!-- Daily Suggestions Card -->
+                    <div class="dashboard-card glass-card span-2 highlight-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="sparkles" class="icon-accent"></i> Copilot's Recommendations</h3>
+                            <span class="badge badge-indigo">AI Suggestion</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="recommendation-text" id="ai-daily-suggestion">Loading your recommendations...</p>
+                            <div class="suggestion-actions">
+                                <button class="btn btn-primary" id="btn-start-recommended-task">
+                                    <i data-lucide="play-circle"></i> Start Study Session
+                                </button>
+                                <button class="btn btn-outline" id="btn-show-notes-copilot">
+                                    <i data-lucide="message-square"></i> Ask Copilot
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Focus Pomodoro Timer Widget -->
+                    <div class="dashboard-card glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="hourglass"></i> Focus Timer</h3>
+                        </div>
+                        <div class="card-body focus-timer-body">
+                            <div class="timer-display">
+                                <svg class="timer-progress" viewBox="0 0 100 100">
+                                    <circle class="bg" cx="50" cy="50" r="45" />
+                                    <circle class="progress" id="timer-progress-bar" cx="50" cy="50" r="45" />
+                                </svg>
+                                <div class="timer-text" id="timer-time">25:00</div>
+                            </div>
+                            <div class="timer-controls">
+                                <button class="timer-btn" id="btn-timer-play" title="Play"><i data-lucide="play"></i></button>
+                                <button class="timer-btn" id="btn-timer-reset" title="Reset"><i data-lucide="rotate-ccw"></i></button>
+                                <button class="timer-btn" id="btn-timer-music" title="Lofi Ambient Sounds"><i data-lucide="music"></i></button>
+                            </div>
+                            <div class="ambient-controls hidden" id="ambient-container">
+                                <span class="ambient-title">Ambient Sound</span>
+                                <div class="ambient-options">
+                                    <button class="ambient-btn" data-sound="rain">🌧️ Rain</button>
+                                    <button class="ambient-btn" data-sound="waves">🌊 Waves</button>
+                                    <button class="ambient-btn" data-sound="forest">🌳 Forest</button>
+                                </div>
+                                <audio id="ambient-audio" loop></audio>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timetable Overview Widget -->
+                    <div class="dashboard-card glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="clock"></i> Today's Classes</h3>
+                            <button class="card-action-btn" data-tab-link="timetable">View All</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="next-class-alert hidden" id="next-class-alert">
+                                <div class="alert-icon"><i data-lucide="bell-ring"></i></div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Next class starting soon!</div>
+                                    <div class="alert-desc" id="next-class-details">Databases at 10:00 AM</div>
+                                </div>
+                            </div>
+                            <div class="classes-today-list" id="dashboard-classes-list">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tasks & Deadlines Summary Widget -->
+                    <div class="dashboard-card glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="list-todo"></i> Upcoming Deadlines</h3>
+                            <button class="card-action-btn" data-tab-link="tasks">Manage</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="next-exam-alert hidden" id="next-exam-alert">
+                                <div class="alert-icon"><i data-lucide="alert-triangle"></i></div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Exam approaching!</div>
+                                    <div class="alert-desc" id="next-exam-details">Algorithms Exam in 2 days</div>
+                                </div>
+                            </div>
+                            <div class="upcoming-deadlines-list" id="dashboard-tasks-list">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Summary Widget -->
+                    <div class="dashboard-card glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="percent"></i> Attendance Status</h3>
+                            <button class="card-action-btn" data-tab-link="attendance">Tracker</button>
+                        </div>
+                        <div class="card-body attendance-widget-body">
+                            <div class="circular-chart-container">
+                                <svg class="circular-chart" viewBox="0 0 36 36">
+                                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="circle" id="dashboard-attendance-circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <text x="18" y="20.35" class="percentage" id="dashboard-attendance-percent">0%</text>
+                                </svg>
+                            </div>
+                            <div class="attendance-summary-stats">
+                                <div class="stat-row">
+                                    <span class="stat-label">Total Attendance</span>
+                                    <span class="stat-value" id="dashboard-total-attendance-details">0 / 0 classes</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Status</span>
+                                    <span class="stat-value" id="dashboard-attendance-status">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Timetable Tab -->
+            <section class="tab-content" id="tab-timetable">
+                <div class="section-header-actions">
+                    <h2>Weekly Timetable</h2>
+                    <button class="btn btn-primary" id="btn-add-class"><i data-lucide="plus"></i> Add Class</button>
+                </div>
+                <div class="timetable-container glass-card">
+                    <div class="timetable-grid-wrapper">
+                        <div class="timetable-grid" id="timetable-grid">
+                            <!-- Timetable headers and grid rendered dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tasks Tab -->
+            <section class="tab-content" id="tab-tasks">
+                <div class="section-header-actions">
+                    <h2>Task & Deadline Manager</h2>
+                    <button class="btn btn-primary" id="btn-add-task"><i data-lucide="plus"></i> New Task</button>
+                </div>
+                <div class="task-board">
+                    <div class="task-column glass-card" data-status="todo">
+                        <div class="column-header">
+                            <h3>To Do</h3>
+                            <span class="column-count" id="count-todo">0</span>
+                        </div>
+                        <div class="task-list" id="list-todo">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                    <div class="task-column glass-card" data-status="in-progress">
+                        <div class="column-header">
+                            <h3>In Progress</h3>
+                            <span class="column-count" id="count-in-progress">0</span>
+                        </div>
+                        <div class="task-list" id="list-in-progress">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                    <div class="task-column glass-card" data-status="completed">
+                        <div class="column-header">
+                            <h3>Completed</h3>
+                            <span class="column-count" id="count-completed">0</span>
+                        </div>
+                        <div class="task-list" id="list-completed">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance Tab -->
+            <section class="tab-content" id="tab-attendance">
+                <div class="section-header-actions">
+                    <h2>Attendance Tracker</h2>
+                    <button class="btn btn-primary" id="btn-add-subject"><i data-lucide="plus"></i> Add Subject</button>
+                </div>
+                <div class="attendance-grid" id="attendance-subjects-grid">
+                    <!-- Subject cards rendered dynamically -->
+                </div>
+            </section>
+
+            <!-- Notes Hub & AI Agent Tab -->
+            <section class="tab-content" id="tab-notes">
+                <div class="notes-agent-layout">
+                    <!-- Left: Notes Upload & Parser -->
+                    <div class="notes-panel glass-card">
+                        <div class="panel-header">
+                            <h3><i data-lucide="file-up"></i> Study Material</h3>
+                        </div>
+                        <div class="panel-body">
+                            <!-- File Upload Area -->
+                            <div class="file-upload-zone" id="file-drop-zone">
+                                <i data-lucide="upload-cloud" class="upload-icon"></i>
+                                <p class="upload-title">Drag & Drop or click to upload</p>
+                                <p class="upload-subtitle">Supports PDF and Text files</p>
+                                <input type="file" id="file-input" accept=".pdf,.txt" class="hidden-input">
+                            </div>
+
+                            <!-- Document Info / Summary Trigger -->
+                            <div class="uploaded-doc-info hidden" id="doc-info-container">
+                                <div class="doc-icon"><i data-lucide="file-text"></i></div>
+                                <div class="doc-details">
+                                    <div class="doc-name" id="doc-name-text">LectureNotes.pdf</div>
+                                    <div class="doc-size" id="doc-size-text">2.4 MB</div>
+                                </div>
+                                <button class="btn-icon btn-danger" id="btn-remove-doc" title="Remove Document">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+
+                            <div class="study-planner-generator" id="study-planner-container">
+                                <h4>Generate Study Plan</h4>
+                                <p class="planner-help">Get a customized breakdown of what to learn over 5 days based on this document.</p>
+                                <button class="btn btn-outline w-full" id="btn-generate-study-plan" disabled>
+                                    <i data-lucide="calendar-range"></i> Create Study Plan
+                                </button>
+                            </div>
+
+                            <!-- Document summary output -->
+                            <div class="document-summary-container hidden" id="doc-summary-container">
+                                <div class="summary-header">
+                                    <h4><i data-lucide="sparkles"></i> Document Summary</h4>
+                                    <button class="btn-copy" id="btn-copy-summary" title="Copy Summary"><i data-lucide="copy"></i></button>
+                                </div>
+                                <div class="summary-content" id="doc-summary-content">
+                                    <!-- Summary points rendered here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: AI Chat Bot Agent -->
+                    <div class="agent-chat-panel glass-card">
+                        <div class="panel-header">
+                            <div class="agent-header-info">
+                                <div class="agent-status-dot online"></div>
+                                <div>
+                                    <h3>Campus Copilot Agent</h3>
+                                    <span class="agent-subtitle" id="agent-active-context">Ready to chat</span>
+                                </div>
+                            </div>
+                            <button class="btn-icon" id="btn-clear-chat" title="Clear Chat">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                        <div class="chat-messages" id="chat-messages-container">
+                            <div class="message system-message">
+                                Hello! I'm your Copilot. Upload your lecture notes or PDF, and I can summarize it, answer questions from its content, or build a study plan for you.
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="Ask anything about your notes or study schedule...">
+                            <button class="chat-send-btn" id="btn-send-message"><i data-lucide="send"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Placement Prep Tab -->
+            <section class="tab-content" id="tab-placement">
+                <div class="section-header-actions">
+                    <h2>Placement Preparation</h2>
+                    <div class="placement-stats-header">
+                        <span class="stat-badge">Solved: <strong id="placement-solved-count">0/150</strong></span>
+                    </div>
+                </div>
+                <div class="placement-grid">
+                    <!-- Left: Topic Breakdown & Progress -->
+                    <div class="placement-card glass-card span-2">
+                        <div class="card-header">
+                            <h3><i data-lucide="code-2"></i> Placement Roadmap & Coding Track</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="placement-topics-list" id="placement-topics-container">
+                                <!-- Dynamic topics render -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Right: Resume Tips & Interview Advice -->
+                    <div class="placement-card glass-card">
+                        <div class="card-header">
+                            <h3><i data-lucide="award"></i> Placement Resource Corner</h3>
+                        </div>
+                        <div class="card-body resource-corner">
+                            <div class="resource-section">
+                                <h4>Resume Checklist</h4>
+                                <ul class="checklist-list">
+                                    <li><label><input type="checkbox" class="resume-chk" data-idx="0"> Keep to single page format</label></li>
+                                    <li><label><input type="checkbox" class="resume-chk" data-idx="1"> Add GitHub & LinkedIn URLs</label></li>
+                                    <li><label><input type="checkbox" class="resume-chk" data-idx="2"> Highlight impact with numbers (X%, Y$)</label></li>
+                                    <li><label><input type="checkbox" class="resume-chk" data-idx="3"> List core projects with tech stack</label></li>
+                                </ul>
+                            </div>
+                            <hr class="divider">
+                            <div class="resource-section">
+                                <h4>Interview Preparation Tips</h4>
+                                <div class="tip-card">
+                                    <div class="tip-icon"><i data-lucide="lightbulb"></i></div>
+                                    <div class="tip-content">
+                                        <h5>Behavioral prep</h5>
+                                        <p>Use the STAR method (Situation, Task, Action, Result) to structure answers for project and leadership questions.</p>
+                                    </div>
+                                </div>
+                                <div class="tip-card">
+                                    <div class="tip-icon"><i data-lucide="lightbulb"></i></div>
+                                    <div class="tip-content">
+                                        <h5>System Design approach</h5>
+                                        <p>Always clarify scale requirements first (RPS, Storage, Latency) before sketching components.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile & Settings Tab -->
+            <section class="tab-content" id="tab-profile">
+                <div class="profile-layout">
+                    <!-- Profile card -->
+                    <div class="glass-card profile-details-card">
+                        <div class="card-header">
+                            <h3>Student Profile</h3>
+                        </div>
+                        <div class="card-body profile-form">
+                            <div class="form-group">
+                                <label for="input-username">Full Name</label>
+                                <input type="text" id="input-username" class="form-control" value="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="input-major">Major / Program</label>
+                                <input type="text" id="input-major" class="form-control" value="Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label for="input-target-attendance">Target Attendance %</label>
+                                <input type="number" id="input-target-attendance" class="form-control" value="75" min="50" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="input-pref-study">Daily Study Goal (Hours)</label>
+                                <input type="number" id="input-pref-study" class="form-control" value="3" min="1" max="12">
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-primary" id="btn-save-profile">Save Settings</button>
+                                <button class="btn btn-outline" id="btn-reset-data" style="border-color: rgba(239, 68, 68, 0.2); color: var(--color-danger);">Reset Defaults</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Class Modal -->
+    <div class="modal-overlay hidden" id="modal-add-class">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h3>Add Class Schedule</h3>
+                <button class="modal-close" id="btn-close-class-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="class-name">Subject Name</label>
+                    <input type="text" id="class-name" class="form-control" placeholder="e.g. Data Structures">
+                </div>
+                <div class="form-group">
+                    <label for="class-day">Day of the Week</label>
+                    <select id="class-day" class="form-control">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="class-start">Start Time</label>
+                        <input type="time" id="class-start" class="form-control" value="09:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="class-end">End Time</label>
+                        <input type="time" id="class-end" class="form-control" value="10:00">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="class-room">Room / Link</label>
+                    <input type="text" id="class-room" class="form-control" placeholder="e.g. Room 402 or Zoom Link">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="btn-cancel-class-modal">Cancel</button>
+                <button class="btn btn-primary" id="btn-save-class">Add Class</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal-overlay hidden" id="modal-add-task">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h3>Create New Task</h3>
+                <button class="modal-close" id="btn-close-task-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="task-title">Task Description</label>
+                    <input type="text" id="task-title" class="form-control" placeholder="e.g. Finish Algorithms Assignment 3">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-category">Category</label>
+                        <select id="task-category" class="form-control">
+                            <option value="Assignment">Assignment</option>
+                            <option value="Exam">Exam</option>
+                            <option value="Project">Project</option>
+                            <option value="Placement">Placement Prep</option>
+                            <option value="Club">Club/Extracurricular</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-priority">Priority</label>
+                        <select id="task-priority" class="form-control">
+                            <option value="High">🔴 High</option>
+                            <option value="Medium" selected>🟡 Medium</option>
+                            <option value="Low">🟢 Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="task-deadline">Deadline</label>
+                    <input type="datetime-local" id="task-deadline" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="btn-cancel-task-modal">Cancel</button>
+                <button class="btn btn-primary" id="btn-save-task">Create Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Subject Modal -->
+    <div class="modal-overlay hidden" id="modal-add-subject">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h3>Add Subject Tracker</h3>
+                <button class="modal-close" id="btn-close-subject-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="subject-name">Subject Title</label>
+                    <input type="text" id="subject-name" class="form-control" placeholder="e.g. Operating Systems">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="subject-attended">Attended Lectures</label>
+                        <input type="number" id="subject-attended" class="form-control" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject-total">Total Lectures</label>
+                        <input type="number" id="subject-total" class="form-control" value="0" min="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="btn-cancel-subject-modal">Cancel</button>
+                <button class="btn btn-primary" id="btn-save-subject">Create Subject</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
